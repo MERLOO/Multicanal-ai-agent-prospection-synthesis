@@ -1,0 +1,5197 @@
+{
+  "name": "2eme projet hostinger 2.2",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "@devlikeapro/n8n-nodes-waha.wahaTrigger",
+      "typeVersion": 202502,
+      "position": [
+        -1440,
+        832
+      ],
+      "id": "aeb2b0ef-0802-43ff-a8b7-71944863eaca",
+      "name": "WAHA Trigger",
+      "webhookId": "291a2125-b72d-44c9-a9f5-c8711f001668"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0d815cfb-c105-44a2-87dc-7f383b247049",
+              "leftValue": "={{ $json.id_session }}",
+              "rightValue": "={{ $('GetChatID').item.json['new chatID'] }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -256,
+        864
+      ],
+      "id": "c956ed46-21e6-4b31-9491-a555713376e1",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "resource": "Chatting",
+        "operation": "Send Text",
+        "session": "default",
+        "chatId": "={{ $('WAHA Trigger').item.json.payload._data.from }}",
+        "reply_to": "=",
+        "text": "={{ $('HTTP Request1').item.json.response }}",
+        "requestOptions": {}
+      },
+      "type": "@devlikeapro/n8n-nodes-waha.WAHA",
+      "typeVersion": 202502,
+      "position": [
+        1232,
+        880
+      ],
+      "id": "5f861aa2-a58c-4968-aed7-034d84c4355c",
+      "name": "Send a text message",
+      "retryOnFail": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "id_session",
+              "value": "={{ $('GetChatID').item.json['new chatID'] }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -464,
+        864
+      ],
+      "id": "dd5c4bfd-7862-475a-925e-fa98a0d98b20",
+      "name": "Select rows from a table",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e6e1bc6d-0b6f-480a-9db4-508431a30ff7",
+              "name": "new chatID",
+              "value": "={{ $json.payload._data.id.remote }}",
+              "type": "string"
+            },
+            {
+              "id": "6720db3f-94f0-41af-acb1-fd8faf5c5c22",
+              "name": "message-lu",
+              "value": "={{ $json.payload.body }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -912,
+        864
+      ],
+      "id": "22b3a1c0-2bb6-4f4e-b275-ee9b87396d8c",
+      "name": "GetChatID"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 16
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1440,
+        400
+      ],
+      "id": "5d0cff9f-873e-42ed-94ec-04c45dc30561",
+      "name": "Schedule Trigger",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "*obtenir la table de tt les contactes, les traduirent pour tel, et envoyer sur wh, si erreur, envoyer sur tel, si err, envoyer par sms (TERMINE)\n\n*requete http pour traduire les nums (impossible)\n*traduire toutes les apis\n\n*tester chaque route (TERMINE)\n*s'occuper des promptes des modèles (TERMINE)\n\npour le prompt de chat gpt faire en sorte d'organiser les liste des id et des discussions de sorte que id : diss, id: diss...etc (TERMINER)\n\nSécuriser tous les ports",
+        "height": 272,
+        "width": 496,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "61b7ca87-da63-49f3-88dc-90d2131fa765",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1440,
+        1904
+      ],
+      "id": "996893ce-3e55-42b7-9920-3f5199c795ca",
+      "name": "Telegram Trigger",
+      "webhookId": "83f27239-e0e2-43ef-8fd6-a044d0bb3674"
+    },
+    {
+      "parameters": {
+        "sendTo": "Le1020@hotmail.fr",
+        "subject": "Synthèse quotidienne",
+        "message": "={{ $json.text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        960,
+        400
+      ],
+      "id": "8cf82fd8-1a5a-43b1-9808-1e146f0436f4",
+      "name": "Send a message",
+      "webhookId": "bf93f9d0-be12-4d7d-8046-48d6acf10747"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "discussion",
+          "mode": "list",
+          "cachedResultName": "discussion"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_session": "={{ $('GetChatID').item.json['new chatID'] }}",
+            "sender": "Prospect",
+            "message": "={{ $('WAHA Trigger').item.json.payload.body }}",
+            "phone_number": "={{ $('id waha to phone').item.json.phone_number }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sender",
+              "displayName": "sender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "replaceEmptyStrings": false
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        160,
+        848
+      ],
+      "id": "f23de596-f3ff-410d-8a8b-59a464389f6e",
+      "name": "Insert msg prospect",
+      "retryOnFail": false,
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $input.first().json.data;\n\n// Filtrer les messages valides (non null et non vides)\nconst validMessages = data.filter(item => \n    item.message && \n    item.message.trim() !== '' && \n    item.message !== null\n);\n\n// Grouper par id_session\nconst sessions = {};\nvalidMessages.forEach(item => {\n    const sessionId = item.id_session;\n    \n    if (!sessions[sessionId]) {\n        sessions[sessionId] = {\n            channel: item.channel,\n            phone_number: item.phone_number,\n            messages: []\n        };\n    }\n    \n    sessions[sessionId].messages.push({\n        id: item.id,\n        sender: item.sender,\n        message: item.message\n    });\n});\n\n// Créer le prompt pour ChatGPT\nlet prompt = `Analyse des conversations prospects - ${new Date().toISOString().split('T')[0]}\\n\\n`;\n\nprompt += \"Voici les conversations récentes avec des prospects :\\n\\n\";\n\nObject.entries(sessions).forEach(([sessionId, session], index) => {\n    prompt += `=== CONVERSATION ${index + 1} ===\\n`;\n    prompt += `Session ID: ${sessionId}\\n`;\n    prompt += `Canal: ${session.channel}\\n`;\n    prompt += `Téléphone: ${session.phone_number || 'Non spécifié'}\\n\\n`;\n    \n    prompt += \"Messages:\\n\";\n    session.messages.forEach(msg => {\n        prompt += `${msg.sender}: \"${msg.message}\"\\n`;\n    });\n    prompt += \"\\n\";\n});\n\nprompt += `\nINSTRUCTIONS D'ANALYSE :\n\nAnalyse ces conversations et fournis une synthèse structurée avec :\n\n1. **Résumé exécutif** : Vue d'ensemble des interactions\n2. **Profil des prospects** : Types de clients contactant\n3. **Besoins identifiés** : Services recherchés\n4. **Qualité des leads** : Niveau d'engagement (chaud/tiède/froid)\n5. **Opportunités commerciales** : Prospects à prioriser\n6. **Actions recommandées** : Prochaines étapes\n7. **Améliorations suggérées** : Optimisation du processus\n\nSois concret et actionnable dans tes recommandations.\n`;\n\n// Statistiques\nconst totalMessages = validMessages.length;\nconst totalSessions = Object.keys(sessions).length;\nconst channelStats = {};\nvalidMessages.forEach(item => {\n    channelStats[item.channel] = (channelStats[item.channel] || 0) + 1;\n});\n\nreturn [{\n    json: {\n        prompt: prompt,\n        statistics: {\n            total_messages: totalMessages,\n            total_sessions: totalSessions,\n            channels: channelStats,\n            generated_at: \"2025-10-24 12:45:02\",\n            generated_by: \"neyous\"\n        }\n    }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -256,
+        400
+      ],
+      "id": "138a5dac-7e35-42d0-88e3-e7e0ce6ec308",
+      "name": "from json to TextBody"
+    },
+    {
+      "parameters": {
+        "content": "## Synthèse quotidienne",
+        "height": 432,
+        "width": 3456
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1488,
+        304
+      ],
+      "id": "b6103a06-3adb-4031-b52e-cff0a096bf4e",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Get phone and teleid').item.json.id_telegram }}",
+        "text": "={{ $('Basic LLM Chain1').item.json.response }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1120,
+        2080
+      ],
+      "id": "eea5c006-a245-4c8e-b38a-8afd1a85b5d8",
+      "name": "Send a text message2",
+      "webhookId": "49b787fa-7907-4351-8713-62f931db4419",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "from": "+16182975680",
+        "to": "={{ $('logs sms').item.json.data.from }}",
+        "message": "={{ $json.message }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        1664,
+        2464
+      ],
+      "id": "1a75d060-637e-4d41-be08-bf6934af0e9f",
+      "name": "Send an SMS/MMS/WhatsApp message",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "## Partie SMS",
+        "height": 672,
+        "width": 3456,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1488,
+        2384
+      ],
+      "id": "4b5d61a2-776a-4e0e-b581-1a483b49c8c4",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Partie TELEGRAME",
+        "height": 592,
+        "width": 3456,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1488,
+        1760
+      ],
+      "id": "c00e7e2f-b99b-4201-bcb1-288df2d463d0",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "language": "python",
+        "pythonCode": "from telethon import TelegramClient\n\n# === CONFIGURATION ===\napi_id = 1234567           # Remplace par ton API ID (my.telegram.org)\napi_hash = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'  # Remplace par ton API Hash\nphone_number = '+213xxxxxxxxx'   # Ton numéro Telegram au format international\nmessage = \"Salut 👋, message envoyé depuis n8n avec Telethon !\"\n\n# === INITIALISATION DU CLIENT ===\nclient = TelegramClient(\"n8n_session\", api_id, api_hash)\n\nasync def main():\n    await client.start(phone_number)\n    # Envoie un message à toi-même\n    await client.send_message(\"me\", message)\n    print(\"✅ Message envoyé avec succès !\")\n\nwith client:\n    client.loop.run_until_complete(main())\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2464,
+        1680
+      ],
+      "id": "a720ed28-8cfa-4f5c-a568-b0cc245b8b32",
+      "name": "Code in Python (Beta)"
+    },
+    {
+      "parameters": {
+        "command": "/bin/sh -c '\npython3 -m venv /home/bin/n8n_venv && \\\n. /home/bin/n8n_venv/bin/activate && \\\npip install telethon && \\\npython3 -c \"import telethon; print(\\\"Telethon version:\\\", telethon.__version__)\"\n'"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2464,
+        1840
+      ],
+      "id": "9b7afe6d-6059-4131-b55c-00f30033a03e",
+      "name": "Execute Command"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "5b062a59-c994-4aff-b147-2edbf4460bd0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        2464,
+        2032
+      ],
+      "id": "122a3ead-0db4-4ff7-8548-0037a8089da4",
+      "name": "Webhook",
+      "webhookId": "5b062a59-c994-4aff-b147-2edbf4460bd0"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0c329326-0d95-414c-bbe8-3a07fde54c4c",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1472,
+        2080
+      ],
+      "id": "77e6c98d-03f5-47cd-8274-726a2f11994c",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "discussion",
+          "mode": "list",
+          "cachedResultName": "discussion"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_session": "={{ $('logs sms').item.json.data.from }}",
+            "sender": "bot",
+            "message": "={{ $('HTTP Request').item.json.response }}",
+            "channel": "sms",
+            "phone_number": "={{ $('logs sms').item.json.data.from }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sender",
+              "displayName": "sender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "replaceEmptyStrings": false
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1456,
+        2656
+      ],
+      "id": "425e1180-b5da-4b5b-8b8c-fabfc60e39d0",
+      "name": "Insert msg ia2",
+      "retryOnFail": false,
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "com.twilio.messaging.inbound-message.received"
+        ]
+      },
+      "type": "n8n-nodes-base.twilioTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1440,
+        2496
+      ],
+      "id": "e5a3061f-6935-4dc9-b21c-82da70b0d40e",
+      "name": "Twilio Trigger",
+      "webhookId": "3acbca6c-9dbd-4a62-a914-40e4a01a0d90",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "## Partie Whatsapp",
+        "height": 960,
+        "width": 3456,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1488,
+        768
+      ],
+      "id": "54bfd8ae-afc5-498e-813b-b41e25631ed6",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:3001/convert",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "phones",
+              "value": "liste*"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -2048,
+        1520
+      ],
+      "id": "46084987-7209-485f-bcec-204623f50e7f",
+      "name": "Requete pour traduire les nums",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0c329326-0d95-414c-bbe8-3a07fde54c4c",
+              "leftValue": "={{ $json._data.ack }}",
+              "rightValue": -1,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        1072
+      ],
+      "id": "a601279b-8679-4d02-a24a-a2c4338aca1a",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "discussion",
+          "mode": "list",
+          "cachedResultName": "discussion"
+        },
+        "limit": 10,
+        "where": {
+          "values": [
+            {
+              "column": "sender",
+              "value": "Prospect"
+            },
+            {
+              "column": "channel",
+              "value": "Whatsapp"
+            },
+            {
+              "column": "id_session",
+              "value": "={{ $('GetChatID').item.json['new chatID'] }}"
+            }
+          ]
+        },
+        "sort": {
+          "values": [
+            {
+              "column": "id",
+              "direction": "DESC"
+            }
+          ]
+        },
+        "options": {
+          "outputColumns": [
+            "message"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        368,
+        848
+      ],
+      "id": "b16f29a8-7281-4c53-9a15-44e541df4f88",
+      "name": "Select rows from a table3",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// REMPLACEZ items PAR VOTRE OBJET JSON ICI ⬇️\nconst item = [\n    $input.first().json.message\n];\n// ⬆️ REMPLACEZ items PAR VOTRE OBJET JSON ICI\n\n// Fusionner les messages en un seul texte\nconst mergedText = items\n    .map(item => {\n        if (!item.json?.message) return '';\n        return `${item.json.message}`;\n    })\n    .filter(msg => msg !== '')\n    .join('\\n');\n\n// Retourner le résultat formaté\nreturn {\n    json: {\n        mergedText: mergedText\n    }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        704,
+        848
+      ],
+      "id": "1b3254a9-fcca-4834-a89e-3ea7cc66f000",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "message"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        528,
+        848
+      ],
+      "id": "2442b17d-1925-4449-b272-68c0a3459e1f",
+      "name": "Aggregate"
+    },
+    {
+      "parameters": {
+        "jsCode": "// REMPLACEZ items PAR VOTRE OBJET JSON ICI ⬇️\nconst item = [\n    $input.first().json.message\n];\n// ⬆️ REMPLACEZ items PAR VOTRE OBJET JSON ICI\n\n// Fusionner les messages en un seul texte\nconst mergedText = items\n    .map(item => {\n        if (!item.json?.message) return '';\n        return `${item.json.message}`;\n    })\n    .filter(msg => msg !== '')\n    .join('\\n');\n\n// Retourner le résultat formaté\nreturn {\n    json: {\n        mergedText: mergedText\n    }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1264,
+        2464
+      ],
+      "id": "8591162d-a630-43b3-b894-031a81789a50",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "message"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1088,
+        2464
+      ],
+      "id": "96594021-8eb8-4cfb-9ceb-6c6c0262e422",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        400
+      ],
+      "id": "d2f584d6-4998-4813-ad9a-6ed8f80c0653",
+      "name": "Aggregate2"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT * \nFROM (\n    SELECT *\n    FROM discussion\n    ORDER BY id DESC\n    LIMIT 100\n) AS last_messages\nORDER BY id ASC;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -704,
+        400
+      ],
+      "id": "939ecad2-69b1-40a4-ab58-891b9434d67e",
+      "name": "selection des 100 derniers messages",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// REMPLACEZ items PAR VOTRE OBJET JSON ICI ⬇️\nconst item = [\n    $input.first().json.message\n];\n// ⬆️ REMPLACEZ items PAR VOTRE OBJET JSON ICI\n\n// Fusionner les messages en un seul texte\nconst mergedText = items\n    .map(item => {\n        if (!item.json?.message) return '';\n        return `${item.json.message}`;\n    })\n    .filter(msg => msg !== '')\n    .join('\\n');\n\n// Retourner le résultat formaté\nreturn {\n    json: {\n        mergedText: mergedText\n    }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1376,
+        1872
+      ],
+      "id": "54e7ca4b-36d3-4e58-b7bc-14f75be527aa",
+      "name": "Code in JavaScript3"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0d815cfb-c105-44a2-87dc-7f383b247049",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -368,
+        1904
+      ],
+      "id": "e4aa2a3a-19b6-4123-9a9e-626bd5c25042",
+      "name": "If5",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_session": "={{ $('GetChatID').item.json['new chatID'] }}",
+            "phone_number": "={{ $('id waha to phone').item.json.phone_number }}",
+            "channel": "whatsapp"
+          },
+          "matchingColumns": [
+            "phone_number"
+          ],
+          "schema": [
+            {
+              "id": "prospect_name",
+              "displayName": "prospect_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "replaceEmptyStrings": false
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -64,
+        944
+      ],
+      "id": "db6da23f-5df3-4703-991d-affc23beadac",
+      "name": "Insérer un nouveau prospect",
+      "retryOnFail": false,
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "channel": "Telegram",
+            "phone_number": "={{ $('Enlever le +').item.json.phone_clean }}",
+            "id_telegram": "={{ $('Telegram Trigger').item.json.message.from.id }}"
+          },
+          "matchingColumns": [
+            "phone_number"
+          ],
+          "schema": [
+            {
+              "id": "prospect_name",
+              "displayName": "prospect_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_telegram",
+              "displayName": "id_telegram",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -128,
+        2016
+      ],
+      "id": "1f7258a8-b091-44db-9807-0244e76ece1d",
+      "name": "Insert le prospect",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0d815cfb-c105-44a2-87dc-7f383b247049",
+              "leftValue": "={{ $json.id_session }}",
+              "rightValue": "=false",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -720,
+        2496
+      ],
+      "id": "9657b45d-f4e6-420d-9e2e-32499bd1d534",
+      "name": "If6",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_session": "={{ $('logs sms').item.json.data.from }}",
+            "channel": "sms",
+            "phone_number": "={{ $('logs sms').item.json.data.from }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "prospect_name",
+              "displayName": "prospect_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -368,
+        2592
+      ],
+      "id": "5e35cabe-547d-480b-a280-0c492e5abc87",
+      "name": "Insert le prospect1",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f7db0334-255b-48d3-af7e-6619501e4b60",
+              "name": "id",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "6afbed4e-4a8f-4167-b2e2-27edf553801a",
+              "name": "data.from",
+              "value": "={{ $json.data.from }}",
+              "type": "string"
+            },
+            {
+              "id": "b30b9a99-2cd1-4cbd-8803-dd9d3f99ef17",
+              "name": "data.body",
+              "value": "={{ $json.data.body }}",
+              "type": "string"
+            },
+            {
+              "id": "5159ec6b-3332-44ab-bb50-ec5ad56d1f0c",
+              "name": "data.to",
+              "value": "={{ $json.data.to }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1200,
+        2496
+      ],
+      "id": "2a3d4612-855d-46b8-9244-b0f568a2b248",
+      "name": "logs sms"
+    },
+    {
+      "parameters": {
+        "content": "## NE PAS TOUCHER\ntransition entre les cannaux",
+        "height": 1136,
+        "width": 368,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        80,
+        1520
+      ],
+      "id": "4e04368f-ff13-462c-9a6a-7045ccfd4d91",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n  const id = $input.first().json['new chatID'] || item.json.contact_id || ''; // adapte selon ton champ\n  const phone = id.replace(/@c\\.us$/, ''); // supprime la fin '@c.us'\n  item.json.phone_number = phone; // ajoute le numéro dans la sortie\n  return item;\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -704,
+        864
+      ],
+      "id": "718dcf76-33e5-4278-87b6-04257387068b",
+      "name": "id waha to phone"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "discussion",
+          "mode": "list",
+          "cachedResultName": "discussion"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_session": "={{ $('GetChatID').item.json['new chatID'] }}",
+            "sender": "bot",
+            "message": "={{ $json._data.body }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sender",
+              "displayName": "sender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "replaceEmptyStrings": false
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1152,
+        1088
+      ],
+      "id": "b22a6d70-c7b8-4a66-a357-b622bcd5978a",
+      "name": "Insert msg ia",
+      "retryOnFail": false,
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "phone_number",
+              "value": "={{ $('id waha to phone').item.json.phone_number }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        128,
+        1600
+      ],
+      "id": "4b273fad-3b0f-4845-8d9a-0825ea2124f8",
+      "name": "Select num tel",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://93.127.162.67:3003/convert",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "={{ $json.message.from.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1040,
+        1904
+      ],
+      "id": "f8dd2329-a693-4f75-b9ea-a7d404f12bcc",
+      "name": "id to phone_number"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5c6ab128-e1b7-497e-be14-6b6815149054",
+              "name": "telegram_id",
+              "value": "={{ $json.telegram_id }}",
+              "type": "string"
+            },
+            {
+              "id": "36ef6e69-f7fa-4f09-aeaf-cd59243da045",
+              "name": "phone_number",
+              "value": "={{ $json.phone_number }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -864,
+        1904
+      ],
+      "id": "2bf91705-2f9d-460e-910f-f699077c4feb",
+      "name": "logs telegram"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f606bbe6-941c-4193-ba1f-52507d48ea67",
+              "name": "message.from.id",
+              "value": "={{ $json.message.from.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1232,
+        1904
+      ],
+      "id": "ccf94aed-0b69-4c6b-8d2d-6804a07fd37d",
+      "name": "num to string"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "id_session",
+              "value": "={{ $json.data.from }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -976,
+        2496
+      ],
+      "id": "0b87ddac-d277-490a-843f-d7c07aa5764c",
+      "name": "Select rows from a table2",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "discussion",
+          "mode": "list",
+          "cachedResultName": "discussion"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "message": "={{ $('Telegram Trigger').item.json.message.text }}",
+            "sender": "Prospect",
+            "id_session": "={{ $('logs telegram').item.json.message.from.id }}",
+            "channel": "telegram",
+            "phone_number": "={{ $('Enlever le +').item.json.phone_clean }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "sender",
+              "displayName": "sender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "replaceEmptyStrings": true
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        128,
+        1888
+      ],
+      "id": "f9f8ec3b-a59e-49f8-96ef-e98e5a1befb3",
+      "name": "Insert msg prospect + phone number",
+      "retryOnFail": false,
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "discussion",
+          "mode": "list",
+          "cachedResultName": "discussion"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_session": "={{ $('logs sms').item.json.data.from }}",
+            "sender": "Prospect",
+            "message": "={{ $('logs sms').item.json.data.body }}",
+            "channel": "sms",
+            "phone_number": "={{ $('logs sms').item.json.data.from }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sender",
+              "displayName": "sender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "replaceEmptyStrings": false
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        128,
+        2480
+      ],
+      "id": "e8b4125f-860f-4a75-ba45-9d5a1ee721d8",
+      "name": "Insert msg prospect + phone_number",
+      "retryOnFail": false,
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT *\nFROM (\n    SELECT *\n    FROM discussion\n    WHERE phone_number = '{{ $json.phone_number }}'\n    ORDER BY id DESC\n    LIMIT 10\n) AS last_messages\nORDER BY id ASC;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        320,
+        2480
+      ],
+      "id": "5f0ac894-c4e2-4588-b1f4-ec6e59cb39bc",
+      "name": "selection des 10 derniers messages1",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "edf692eb-78b6-4852-9d86-b15f86e21ec4",
+              "leftValue": "={{ $json.channel }}",
+              "rightValue": "Telegram",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        1888
+      ],
+      "id": "679d559f-05ef-4f2e-aca3-a9c765dc1de0",
+      "name": "si on vient de whatsapp"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://93.127.162.67:3003/convert",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "+213542052293"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -1872,
+        1520
+      ],
+      "id": "963a4d65-c192-4e08-81fc-89f0395ffc05",
+      "name": "HTTP Request3",
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        960,
+        2080
+      ],
+      "id": "14fc5f28-9d2a-448c-a98a-295a53157068",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "from": "=+16182975680",
+        "to": "=+{{ $('selection des 10 derniers messages1').item.json.phone_number }}",
+        "message": "={{ $('HTTP Request1').item.json.response }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        1456,
+        2864
+      ],
+      "id": "8b93d058-398a-44c9-af39-7f1e46280a87",
+      "name": "Send an SMS/MMS/WhatsApp message1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "edf692eb-78b6-4852-9d86-b15f86e21ec4",
+              "leftValue": "={{ $json.channel }}",
+              "rightValue": "sms",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        688,
+        2480
+      ],
+      "id": "1b8d3bb9-213f-4f2c-a18d-becc1f09a55c",
+      "name": "si on vient de Telegram"
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "discussion",
+          "mode": "list",
+          "cachedResultName": "discussion"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sender": "bot",
+            "message": "={{ $('http msg').item.json.response }}",
+            "channel": "sms",
+            "phone_number": "={{ $('Aggregate5').item.json.phone_number[0] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sender",
+              "displayName": "sender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "replaceEmptyStrings": false
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1664,
+        2864
+      ],
+      "id": "d16c9813-1777-4f61-9e55-2d83f94f84aa",
+      "name": "Insert msg ia4",
+      "retryOnFail": false,
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "discussion",
+          "mode": "list",
+          "cachedResultName": "discussion"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_session": "={{ $('get sent msg').item.json.result.chat.id }}",
+            "sender": "bot",
+            "message": "={{ $json['Réponse IA'] }}",
+            "channel": "Telegram",
+            "phone_number": "={{ $('Aggregate6').item.json.phone_number[0] }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "message",
+              "displayName": "message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sender",
+              "displayName": "sender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "replaceEmptyStrings": false
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1696,
+        2096
+      ],
+      "id": "5c5c7ac8-c946-4428-8ad2-6c9c363c4313",
+      "name": "Insert msg ia5",
+      "retryOnFail": false,
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "={{ $('Basic LLM Chain2').item.json.response }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1792,
+        1872
+      ],
+      "id": "19621ba0-21dc-4248-b882-61629d86bdba",
+      "name": "Send a text message3",
+      "webhookId": "27e83dad-b9df-48c5-b146-a6999e40b803",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "phone_number",
+              "value": "={{ $('Select num tel').item.json.phone_number }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        128,
+        2192
+      ],
+      "id": "5b7895f5-9d1f-467f-92fd-92204f651ea5",
+      "name": "Select phone_number depuis telegram",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "limit": 1,
+        "where": {
+          "values": [
+            {
+              "column": "phone_number",
+              "value": "={{ $('Select num tel').item.json.phone_number }}"
+            }
+          ]
+        },
+        "options": {
+          "outputColumns": [
+            "phone_number",
+            "id_telegram"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        592,
+        2096
+      ],
+      "id": "05549519-740a-484a-ad07-72b9e6b17b3c",
+      "name": "Get phone and teleid",
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f5e771db-55fa-402b-ad1d-63ea1e7930ae",
+              "leftValue": "={{ $json.id_telegram }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        2096
+      ],
+      "id": "64b4a02d-2baf-4cf7-94df-722aaa6ef840",
+      "name": "Si il n'existe pas sur telegram"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "discussion",
+          "mode": "list",
+          "cachedResultName": "discussion"
+        },
+        "limit": 10,
+        "where": {
+          "values": [
+            {
+              "column": "sender",
+              "value": "Prospect"
+            },
+            {
+              "column": "phone_number",
+              "value": "={{ $json.phone_number }}"
+            }
+          ]
+        },
+        "sort": {
+          "values": [
+            {
+              "column": "id",
+              "direction": "DESC"
+            }
+          ]
+        },
+        "options": {
+          "outputColumns": [
+            "message",
+            "phone_number",
+            "channel"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        320,
+        1888
+      ],
+      "id": "2b83e9d0-4e7e-4021-9578-7e9335076801",
+      "name": "Select des 10 derniers msg",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "phone_number",
+              "value": "={{ $json.phone_number }}"
+            }
+          ]
+        },
+        "options": {
+          "outputColumns": [
+            "channel"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        768,
+        1888
+      ],
+      "id": "10b4ef54-4ec9-483c-aee2-012a5dbae319",
+      "name": "select prospect channel",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "phone_number",
+              "value": "={{ $json.phone_number }}"
+            }
+          ]
+        },
+        "options": {
+          "outputColumns": [
+            "*"
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        512,
+        2608
+      ],
+      "id": "43010c66-4775-4c98-80c0-9939a48cc504",
+      "name": "select prospect channel1",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "channel": "Telegram",
+            "phone_number": "={{ $('Aggregate6').item.json.phone_number[0] }}"
+          },
+          "matchingColumns": [
+            "phone_number"
+          ],
+          "schema": [
+            {
+              "id": "prospect_name",
+              "displayName": "prospect_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1840,
+        2096
+      ],
+      "id": "c1b24b99-beba-47ac-87d2-1a59247b1fb3",
+      "name": "Modifier le channel",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "channel": "sms",
+            "phone_number": "={{ $('Select des 10 derniers msg1').item.json.phone_number }}"
+          },
+          "matchingColumns": [
+            "phone_number"
+          ],
+          "schema": [
+            {
+              "id": "prospect_name",
+              "displayName": "prospect_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1632,
+        2656
+      ],
+      "id": "e328f5ae-b418-45ca-9509-a13ad0d7d482",
+      "name": "Modifier le channel1",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "channel": "sms",
+            "phone_number": "={{ $json.phone_number }}"
+          },
+          "matchingColumns": [
+            "phone_number"
+          ],
+          "schema": [
+            {
+              "id": "prospect_name",
+              "displayName": "prospect_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "id_telegram",
+              "displayName": "id_telegram",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1840,
+        2864
+      ],
+      "id": "16ec1c96-d2c3-480c-85b2-04c42606c346",
+      "name": "Modifier le channel2",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Dans un nœud Code\nconst phoneNumber = $input.first().json.phone_number;\nconst cleanPhone = phoneNumber.startsWith('+') ? phoneNumber.slice(1) : phoneNumber;\n\nreturn [{ json: { ...items[0].json, phone_clean: cleanPhone } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -688,
+        1904
+      ],
+      "id": "aa62b95d-98c6-421f-967a-6e41fe6e95a8",
+      "name": "Enlever le +"
+    },
+    {
+      "parameters": {
+        "from": "Vonage APIs",
+        "to": "={{ $('Extract from File').item.json.numero_mobile }}",
+        "message": "Bonjour. Je vous contacte en tant qu'agent conversationnel pour Francis, votre ancien commercial myPOS. Francis m'a chargé de vous informer, comme vous l'aviez souhaité, que notre nouvelle solution d'encaissement par carte bancaire, incluant désormais un compte bancaire et une carte bancaire dédiée, est maintenant disponible. Avez-vous quelques minutes pour que je vous présente cette nouveauté ?",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.vonage",
+      "typeVersion": 1,
+      "position": [
+        -1424,
+        3664
+      ],
+      "id": "8c6dc750-3b70-48d7-9cf3-681d473bf7de",
+      "name": "Send an SMS1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "path": "9e434046-14e0-4ad1-aa8d-6de19a2411c5",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1440,
+        2688
+      ],
+      "id": "2d2379c2-c103-4257-8c06-662982efd1dd",
+      "name": "Webhook1",
+      "webhookId": "9e434046-14e0-4ad1-aa8d-6de19a2411c5"
+    },
+    {
+      "parameters": {
+        "binaryPropertyName": "CSV",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -1136,
+        3232
+      ],
+      "id": "0a1b5e26-20d5-4c3a-98be-4539bcd3fd6a",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/files/csv/contacts_test.csv",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -1888,
+        3360
+      ],
+      "id": "f60da04c-af3b-41d2-a7d8-11125fde29ce",
+      "name": "Read/Write Files from Disk",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "prospect_name",
+              "displayName": "prospect_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2048,
+        1728
+      ],
+      "id": "17e20ab7-03f2-42e9-8e42-509cd608b229",
+      "name": "Insert rows in a table",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "deleteTable",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "discussion",
+          "mode": "list",
+          "cachedResultName": "discussion"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -1872,
+        1728
+      ],
+      "id": "516c5ee6-8e74-476a-beaf-01193f5a5151",
+      "name": "Delete table or rows",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "Chatting",
+        "operation": "Send Text",
+        "session": "default",
+        "chatId": "={{ $('Prendre une tranche de 40').item.json.phone_number }}",
+        "reply_to": "=",
+        "text": "=Bonjour. Je vous contacte en tant qu'agent conversationnel pour Francis, votre ancien commercial myPOS. Francis m'a chargé de vous informer, comme vous l'aviez souhaité, que notre nouvelle solution d'encaissement par carte bancaire, incluant désormais un compte bancaire et une carte bancaire dédiée, est maintenant disponible. Avez-vous quelques minutes pour que je vous présente cette nouveauté ?",
+        "requestOptions": {}
+      },
+      "type": "@devlikeapro/n8n-nodes-waha.WAHA",
+      "typeVersion": 202502,
+      "position": [
+        -464,
+        3232
+      ],
+      "id": "544c994c-ed73-470f-84dd-1d922eac8355",
+      "name": "Send a text message5",
+      "alwaysOutputData": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO logs (prospect_name,phone_number, channel,status) VALUES\n('{{ $json['﻿Prénom'] }} {{ $json.Nom }}', '{{ $json['Numéro Mobile'] }}','whatsapp','non-contacté');",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -912,
+        3232
+      ],
+      "id": "138cf03f-8001-4032-9793-b86028cf41f5",
+      "name": "inserer le csv dans la bdd",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "from": "=+15093504975",
+        "to": "={{ $('Extract from File').item.json.numero_mobile }}",
+        "message": "Francis myPOS : Notre nouvelle solution TPE+compte bancaire est disponible comme souhaité. Présentation ?",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        3328
+      ],
+      "id": "82fb4de1-7931-4a3c-b520-facb0625a6e1",
+      "name": "Send an SMS/MMS/WhatsApp message2",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "## Envoie du 1er msg",
+        "height": 496,
+        "width": 3456,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1488,
+        3088
+      ],
+      "id": "b97e4f6d-19dd-4315-9b0c-13a3226bae1f",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "## API A CHANGER",
+        "height": 240,
+        "width": 224,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        3264
+      ],
+      "id": "b47d537d-4d87-46ca-93f1-665ada67266c",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -912,
+        3424
+      ],
+      "id": "b5379ac3-b47e-4ca7-b1a6-f53dcd500215",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "channel": "whatsapp",
+            "status": "contacté",
+            "phone_number": "={{ $json._data.to.user }}"
+          },
+          "matchingColumns": [
+            "phone_number"
+          ],
+          "schema": [
+            {
+              "id": "prospect_name",
+              "displayName": "prospect_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        208,
+        3136
+      ],
+      "id": "0a13f1e5-bce3-424b-8baf-6f9f26448271",
+      "name": "Insert or update rows in a table",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "channel": "sms",
+            "status": "contacté",
+            "phone_number": "={{ $('Send a text message5').item.json._data.to.user }}"
+          },
+          "matchingColumns": [
+            "phone_number"
+          ],
+          "schema": [
+            {
+              "id": "prospect_name",
+              "displayName": "prospect_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "id_telegram",
+              "displayName": "id_telegram",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        208,
+        3328
+      ],
+      "id": "476a2c60-b658-471d-b8c6-c81f698cd705",
+      "name": "Insert or update rows in a table1",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d819401a-5a99-4ee4-a25d-d5bf448765c1",
+              "name": "Réponse IA",
+              "value": "={{ $json.result.text }}",
+              "type": "string"
+            },
+            {
+              "id": "97adcfc6-9c08-4be1-82e6-de2ed94c9066",
+              "name": "ok",
+              "value": "={{ $json.ok }}",
+              "type": "boolean"
+            },
+            {
+              "id": "6f868185-1408-4bf2-9dca-066d2731b9ad",
+              "name": "result.chat.id",
+              "value": "={{ $json.result.chat.id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1312,
+        2080
+      ],
+      "id": "e7543083-21b6-4d53-a4d1-3e13c3902820",
+      "name": "get sent msg"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "681e4dcc-68c1-484d-9d81-be7bb2d0894c",
+              "name": "message",
+              "value": "={{ $('selection des 10 derniers messages1').item.json.message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        896,
+        2464
+      ],
+      "id": "39d84354-09ab-474b-99f8-2eb3f57469c7",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "49a3244c-5e52-45b4-8ec9-17af4ab9aec0",
+              "name": "response",
+              "value": "={{ $json.response }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        688,
+        2320
+      ],
+      "id": "1700ccb2-93fa-4fab-88c2-1a5f2fb0c2a2",
+      "name": "http msg"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4b1ad759-4971-460a-abbf-7babf14c7b5a",
+              "name": "1",
+              "value": "1",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2704,
+        2640
+      ],
+      "id": "dc3bba07-115f-4910-92ef-f93321fb52ad",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6801ff36-612e-4783-804b-923af450ccf9",
+              "name": "2",
+              "value": "2",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2704,
+        2832
+      ],
+      "id": "cd243d0e-334c-48c3-8f73-ca356e4503b5",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        3168,
+        2688
+      ],
+      "id": "310b48dc-f2f0-4030-850e-64a3f2691e60",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "db311df5-5bd4-41a3-bfc0-c7fc700520e3",
+              "leftValue": "={{ $json['1'] }}",
+              "rightValue": "1",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "37722675-2eea-4b1e-950e-0aa32d5d74ba",
+              "leftValue": "={{ $json['2'] }}",
+              "rightValue": "2",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2960,
+        2496
+      ],
+      "id": "01d7593d-fb69-410d-9d98-4e2ff1dae37e",
+      "name": "If1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        2944,
+        2720
+      ],
+      "id": "97cf2556-b566-4411-87b5-09614a68b9ff",
+      "name": "Merge"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        896,
+        2880
+      ],
+      "id": "1420a784-14c0-4225-be90-c7ae75833e32",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "where": {
+          "values": [
+            {
+              "column": "phone_number",
+              "value": "=213542052293"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -2080,
+        2032
+      ],
+      "id": "ae52232f-aed2-4848-944a-289f3abaaed5",
+      "name": "Select phone_number depuis telegram1",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1872,
+        2032
+      ],
+      "id": "a6c1f042-f9ec-463c-9711-71c92281659d",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fdbca3dd-6536-4075-a7b0-974f5da61056",
+              "name": "phone_number",
+              "value": "={{ $('Select phone_number depuis telegram1').item.json.phone_number }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1664,
+        2032
+      ],
+      "id": "243cb46f-4938-46ee-8bfb-d1dc2395d030",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "response"
+            },
+            {
+              "fieldToAggregate": "phone_number"
+            },
+            {}
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1264,
+        2864
+      ],
+      "id": "6e5f6dc2-f918-4677-ab16-ecd813220afd",
+      "name": "Aggregate5"
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "channel": "Telegram",
+            "phone_number": "={{ $('Enlever le +').item.json.phone_clean }}",
+            "id_telegram": "={{ $('Telegram Trigger').item.json.message.from.id }}"
+          },
+          "matchingColumns": [
+            "phone_number"
+          ],
+          "schema": [
+            {
+              "id": "prospect_name",
+              "displayName": "prospect_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": true
+            },
+            {
+              "id": "id_telegram",
+              "displayName": "id_telegram",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -128,
+        1840
+      ],
+      "id": "41a9144e-4012-4368-8bc7-4754121b583b",
+      "name": "Changer le channel",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "value": "public",
+          "mode": "list",
+          "cachedResultName": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_session": "={{ $('GetChatID').item.json['new chatID'] }}",
+            "phone_number": "={{ $('id waha to phone').item.json.phone_number }}",
+            "channel": "whatsapp"
+          },
+          "matchingColumns": [
+            "phone_number"
+          ],
+          "schema": [
+            {
+              "id": "prospect_name",
+              "displayName": "prospect_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "replaceEmptyStrings": false
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -64,
+        784
+      ],
+      "id": "708c2d33-468e-471e-8476-7b4455369039",
+      "name": "Changer de channel vers whatsapp",
+      "retryOnFail": false,
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "upsert",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "logs",
+          "mode": "list",
+          "cachedResultName": "logs"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id_session": "={{ $('logs sms').item.json.data.from }}",
+            "channel": "sms",
+            "phone_number": "={{ $('logs sms').item.json.data.from }}"
+          },
+          "matchingColumns": [
+            "phone_number"
+          ],
+          "schema": [
+            {
+              "id": "prospect_name",
+              "displayName": "prospect_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "phone_number",
+              "displayName": "phone_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "channel",
+              "displayName": "channel",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id_session",
+              "displayName": "id_session",
+              "required": true,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -368,
+        2400
+      ],
+      "id": "b72afc4d-8660-4be3-a72e-af36cb8a64d8",
+      "name": "changer me channel vers sms",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToAggregate": {
+          "fieldToAggregate": [
+            {
+              "fieldToAggregate": "message"
+            },
+            {
+              "fieldToAggregate": "phone_number"
+            },
+            {
+              "fieldToAggregate": "channel"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        592,
+        1888
+      ],
+      "id": "d2cb1c4b-2a73-466c-98eb-3759b3faac8f",
+      "name": "Aggregate6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "82cf890c-93d4-4d24-81ac-805761639947",
+              "name": "message",
+              "value": "={{ $('Aggregate6').item.json.message }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1216,
+        1872
+      ],
+      "id": "e12f076e-efeb-4fc3-b019-528039dd4fcd",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "efb63a17-bbf3-4e1b-b30b-2331f3a19485",
+              "leftValue": "={{ $json.phone_number }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1056,
+        2880
+      ],
+      "id": "37cd3135-b9bf-4cdf-9ac8-44c71b134ac2",
+      "name": "kill"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT phone_number, prospect_name, channel, status\nFROM logs \nWHERE status = 'non-contacté' \nLIMIT 39;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -688,
+        3232
+      ],
+      "id": "2b576ea6-259f-4132-8d9f-b4a2d0b14aeb",
+      "name": "Prendre une tranche de 40",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "from": "=+15093504975",
+        "to": "=+33605997485\n",
+        "message": "bonsoir mon grand",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.twilio",
+      "typeVersion": 1,
+      "position": [
+        1728,
+        3136
+      ],
+      "id": "0211a7e4-ecc2-43a1-aa34-a27a4262215f",
+      "name": "Send an SMS/MMS/WhatsApp message4"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "593d172c-f78d-4515-8a74-67bf7325c827",
+        "options": {
+          "binaryPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1888,
+        3136
+      ],
+      "id": "3c85b0f6-c175-41ec-a613-86b7304bc3f2",
+      "name": "Webhook2",
+      "webhookId": "593d172c-f78d-4515-8a74-67bf7325c827"
+    },
+    {
+      "parameters": {
+        "formTitle": "CSV FILE",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "CSV",
+              "fieldType": "file"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -1392,
+        3232
+      ],
+      "id": "424a2bb7-4423-45e9-a79f-8d208fcaa311",
+      "name": "On form submission",
+      "webhookId": "ea1230d3-5416-4ae0-a9b3-8c7885464d67"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://93.127.162.67:3003/convert",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "chat_id",
+              "value": "={{ $json.message.from.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        128,
+        1328
+      ],
+      "id": "cab4b5d8-b4aa-4b19-8134-e41e7cca1da3",
+      "name": "Phone_number to ID"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM discussion \nWHERE id < (\n    SELECT MIN(keep_id) FROM (\n        SELECT DISTINCT phone_number, \n               nth_value(id, 20) OVER (\n                   PARTITION BY phone_number \n                   ORDER BY id DESC \n                   ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING\n               ) as keep_id\n        FROM discussion\n    ) limits\n    WHERE limits.phone_number = discussion.phone_number\n    AND keep_id IS NOT NULL\n);",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1168,
+        400
+      ],
+      "id": "886b8c84-ddf6-4a68-8865-aa948f9be73f",
+      "name": "limiter les discussions à 20msg par contact",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        912,
+        848
+      ],
+      "id": "01c6e0d9-f823-4121-b3fa-8e3991a0e565",
+      "name": "Basic LLM Chain1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        912,
+        992
+      ],
+      "id": "3e90991b-e683-4452-ab8d-04aba4dfaf98",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "4eS68wE1bPCxgR1b",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1520,
+        1872
+      ],
+      "id": "525ba431-988c-4a86-8101-a5ef005c4ecd",
+      "name": "Basic LLM Chain2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1536,
+        1760
+      ],
+      "id": "9028ef35-2138-4ec2-b91a-0c869452b0ed",
+      "name": "Groq Chat Model1",
+      "credentials": {
+        "groqApi": {
+          "id": "4eS68wE1bPCxgR1b",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1408,
+        2464
+      ],
+      "id": "47679ea9-cb29-4e83-99d7-045b4a3ee77e",
+      "name": "Basic LLM Chain3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        1408,
+        2368
+      ],
+      "id": "4d8b0762-4c02-4a04-bdfe-d8605f0a7a3b",
+      "name": "Groq Chat Model2",
+      "credentials": {
+        "groqApi": {
+          "id": "4eS68wE1bPCxgR1b",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        352,
+        400
+      ],
+      "id": "52ee9a77-bfb7-4900-8caa-73b1e48300f4",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        352,
+        544
+      ],
+      "id": "86cfd3ef-9b8d-4921-aad4-e986ed79c97b",
+      "name": "Groq Chat Model3",
+      "credentials": {
+        "groqApi": {
+          "id": "4eS68wE1bPCxgR1b",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT EXISTS(\n    SELECT 1 \n    FROM logs\n    WHERE phone_number = CAST({{ $json.phone_clean }} AS TEXT)\n    AND channel = 'Telegram'\n);\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -544,
+        1904
+      ],
+      "id": "e48f7727-5d2e-41c0-a648-3c4533ea6ea6",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "Cls8ZB4X9i1Mv2Gp",
+          "name": "Postgres account 3"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Changer de channel vers whatsapp",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insérer un nouveau prospect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetChatID": {
+      "main": [
+        [
+          {
+            "node": "id waha to phone",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "selection des 100 derniers messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WAHA Trigger": {
+      "main": [
+        [],
+        [
+          {
+            "node": "GetChatID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert msg prospect": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "from json to TextBody": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "num to string",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message2": {
+      "main": [
+        [
+          {
+            "node": "get sent msg",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Select phone_number depuis telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert msg ia5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert msg ia2": {
+      "main": [
+        [
+          {
+            "node": "Modifier le channel1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Phone_number to ID",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert msg ia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table3": {
+      "main": [
+        [
+          {
+            "node": "Aggregate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate2": {
+      "main": [
+        [
+          {
+            "node": "from json to TextBody",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "selection des 100 derniers messages": {
+      "main": [
+        [
+          {
+            "node": "Aggregate2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "http msg",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Basic LLM Chain2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insérer un nouveau prospect": {
+      "main": [
+        [
+          {
+            "node": "Insert msg prospect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If5": {
+      "main": [
+        [
+          {
+            "node": "Changer le channel",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert le prospect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert le prospect": {
+      "main": [
+        [
+          {
+            "node": "Insert msg prospect + phone number",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "changer me channel vers sms",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Insert le prospect1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert le prospect1": {
+      "main": [
+        [
+          {
+            "node": "Insert msg prospect + phone_number",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "logs sms": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "id waha to phone": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select num tel": {
+      "main": [
+        [
+          {
+            "node": "Select des 10 derniers msg",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "id to phone_number": {
+      "main": [
+        [
+          {
+            "node": "logs telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "logs telegram": {
+      "main": [
+        [
+          {
+            "node": "Enlever le +",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "num to string": {
+      "main": [
+        [
+          {
+            "node": "id to phone_number",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table2": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert msg prospect + phone number": {
+      "main": [
+        [
+          {
+            "node": "Select des 10 derniers msg",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert msg prospect + phone_number": {
+      "main": [
+        [
+          {
+            "node": "selection des 10 derniers messages1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "selection des 10 derniers messages1": {
+      "main": [
+        [
+          {
+            "node": "select prospect channel1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "si on vient de whatsapp": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get phone and teleid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "si on vient de Telegram": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Send an SMS/MMS/WhatsApp message1": {
+      "main": [
+        [
+          {
+            "node": "Insert msg ia4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message3": {
+      "main": [
+        [
+          {
+            "node": "get sent msg",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select phone_number depuis telegram": {
+      "main": [
+        [
+          {
+            "node": "selection des 10 derniers messages1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get phone and teleid": {
+      "main": [
+        [
+          {
+            "node": "Si il n'existe pas sur telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Si il n'existe pas sur telegram": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Select phone_number depuis telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select des 10 derniers msg": {
+      "main": [
+        [
+          {
+            "node": "Aggregate6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "http msg",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Basic LLM Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "select prospect channel": {
+      "main": [
+        [
+          {
+            "node": "si on vient de whatsapp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "select prospect channel1": {
+      "main": [
+        [
+          {
+            "node": "si on vient de Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert msg ia5": {
+      "main": [
+        [
+          {
+            "node": "Modifier le channel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an SMS/MMS/WhatsApp message": {
+      "main": [
+        [
+          {
+            "node": "Insert msg ia2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert msg ia4": {
+      "main": [
+        [
+          {
+            "node": "Modifier le channel2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enlever le +": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Twilio Trigger": {
+      "main": [
+        [
+          {
+            "node": "logs sms",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "inserer le csv dans la bdd",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "inserer le csv dans la bdd": {
+      "main": [
+        [
+          {
+            "node": "Prendre une tranche de 40",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message5": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send an SMS/MMS/WhatsApp message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Prendre une tranche de 40",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an SMS/MMS/WhatsApp message2": {
+      "main": [
+        [
+          {
+            "node": "Insert or update rows in a table1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get sent msg": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "limiter les discussions à 20msg par contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "http msg": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "kill",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select phone_number depuis telegram1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate5": {
+      "main": [
+        [
+          {
+            "node": "Send an SMS/MMS/WhatsApp message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Changer le channel": {
+      "main": [
+        [
+          {
+            "node": "Insert msg prospect + phone number",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Changer de channel vers whatsapp": {
+      "main": [
+        [
+          {
+            "node": "Insert msg prospect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "changer me channel vers sms": {
+      "main": [
+        [
+          {
+            "node": "Insert msg prospect + phone_number",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate6": {
+      "main": [
+        [
+          {
+            "node": "select prospect channel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "kill": {
+      "main": [
+        [
+          {
+            "node": "Aggregate5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prendre une tranche de 40": {
+      "main": [
+        [
+          {
+            "node": "Send a text message5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Phone_number to ID": {
+      "main": [
+        [
+          {
+            "node": "Select num tel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain2": {
+      "main": [
+        [
+          {
+            "node": "Send a text message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain3": {
+      "main": [
+        [
+          {
+            "node": "Send an SMS/MMS/WhatsApp message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "If5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "640a338c-579f-42fc-b3a6-55d0ccd0172f",
+  "meta": {
+    "instanceId": "2fe8f6c79506c71c930df350dbd2a6349e6cc30ec63d0928f1ea5f7e822bafe4"
+  },
+  "id": "tLXICFDhONKMZYAY",
+  "tags": []
+}

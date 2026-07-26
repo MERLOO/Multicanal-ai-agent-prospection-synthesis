@@ -1,0 +1,9 @@
+# Secrets
+.env
+
+# Données persistantes des conteneurs (bases, sessions WhatsApp, etc.)
+data/
+
+# Divers
+.DS_Store
+*.log
