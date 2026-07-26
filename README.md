@@ -1,6 +1,6 @@
 # Multi-channel prospecting bot (WhatsApp / Telegram / SMS)
 
-Local demo of a prospecting bot that chats with prospects across 3 channels using the **Groq** API, keeps conversation history in **Postgres**, and emails a daily digest of the interesting leads.
+Local demo of a prospecting bot, sold for a french groupe, that chats with prospects across 3 channels using the **Groq** API, keeps conversation history in **Postgres**, and emails a daily digest of the interesting leads.
 
 
 ![Main workflow](./Workflow.jpg)
