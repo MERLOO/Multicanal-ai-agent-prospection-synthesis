@@ -49,7 +49,7 @@ docker compose ps
 
 ## 4. Import the workflow
 
-In n8n: **Workflows → Import from File** → select `workflows/2eme_projet_hostinger_2_2.json`.
+In n8n: **Workflows → Import from File** → select `workflows/Workflow.json`.
 
 ## 5. Set up credentials in n8n
 
@@ -68,14 +68,7 @@ Then, on every node in the workflow that needs a credential, select the one you 
 
 Open the WAHA dashboard (http://localhost:3001), create a session, scan the QR code with WhatsApp (Settings → Linked Devices). WAHA talks to n8n directly over the internal Docker network — no public URL needed for this channel.
 
-## 7. ⚠️ Check before activating the workflow
-
-While inspecting the JSON, I found two things you should decide on before activating:
-
-- **"if jayan" node** (right after the WAHA Trigger): only lets through messages from a single WhatsApp number (`262693498420@c.us`), everything else is silently dropped. If this was a test filter, you'll need to remove it or make it conditional so the bot replies to all prospects.
-- **"Schedule Trigger1"** (feeds "Prendre une tranche de 40", the batch outreach to prospects): its repeat rule is empty and needs configuring (e.g. every X hours) before activation.
-
-## 8. Local testing limitation: Telegram & SMS
+## 7. Local testing limitation: Telegram & SMS
 
 - **WhatsApp (WAHA)** works fine locally (internal Docker communication).
 - **Telegram** and **Twilio (SMS)** both need a **public HTTPS URL** to receive incoming messages — not possible locally as-is. To test these two channels for real without a VPS, you can use a temporary tunnel, e.g.:
@@ -87,7 +80,7 @@ ngrok http 5678
 
 Then use the resulting `https://xxxx.ngrok-free.app` URL as the Telegram/Twilio webhook for the duration of the test. This isn't a permanent solution (the URL changes every restart) — for real production use of these two channels you'll need a domain name + VPS (happy to help when you get there).
 
-## 9. Activate the workflow
+## 8. Activate the workflow
 
 Once all credentials are set up and the points in §7 are resolved, activate the workflow using the **Active** toggle in the top-right of n8n.
 
