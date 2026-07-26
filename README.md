@@ -10,8 +10,6 @@ Local demo of a prospecting bot that chats with prospects across 3 channels usin
 | WAHA | Unofficial WhatsApp gateway | http://localhost:3001 |
 | Postgres | Conversation & prospect history | internal |
 | Groq (LLM) | Bot's conversational brain | via n8n credential |
-| Grafana | Monitoring dashboard | http://localhost:3000 |
-| Mailhog | Captures n8n's internal emails (not the lead digest) | http://localhost:8025 |
 
 Channels handled by the workflow: WhatsApp (WAHA Trigger), Telegram (Telegram Trigger), SMS (Twilio Trigger). The Gmail node sends the daily lead digest, triggered by a Schedule Trigger at 4 PM.
 
@@ -96,4 +94,3 @@ Once all credentials are set up and the points in §7 are resolved, activate the
 ## Possible next steps
 
 - Deploy on a VPS (Hostinger or other) with a domain name + HTTPS (nginx + Let's Encrypt) so Telegram and Twilio work continuously.
-- Set up a real SMTP relay instead of Mailhog if you also want n8n's system notifications to actually be delivered.
